@@ -1,7 +1,7 @@
 # AI Chat Interface
 <p>
 A fully client-side, ChatGPT-style chat application built with pure HTML, CSS, and JavaScript — no frameworks, no build tools, no backend required. </p>
-<br>
+
 
 demo- [visit website](https://shivani-vishwakarmaa.github.io/AI-chat-interface-/)
 ---
