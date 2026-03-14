@@ -1,0 +1,850 @@
+/* ═══════════════════════════════════════════════════════════════
+   style.css  —  AI Chat Interface v2
+   Aesthetic: refined dark-first, editorial type, geometric accents
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. CSS CUSTOM PROPERTIES ─────────────────────────────────── */
+
+:root {
+  /* Layout */
+  --sidebar-w:      260px;
+  --header-h:       58px;
+  --input-bar-h:    90px;
+
+  /* Radii */
+  --r-bubble:  18px;
+  --r-sm:      8px;
+  --r-input:   14px;
+  --r-avatar:  50%;
+
+  /* Typography */
+  --font-display: 'Syne',    sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* Motion */
+  --ease:       cubic-bezier(.4,0,.2,1);
+  --ease-spring:cubic-bezier(.22,1,.36,1);
+  --t:          .22s;
+}
+
+/* ── DARK theme ── */
+[data-theme="dark"] {
+  --bg-app:           #0d0e12;
+  --bg-sidebar:       #111318;
+  --bg-header:        rgba(13,14,18,.85);
+  --bg-main:          #0d0e12;
+  --bg-input-bar:     #111318;
+  --bg-input:         #1a1c25;
+  --bg-bubble-ai:     #1a1c25;
+  --bg-bubble-user:   #4f6ef7;
+  --bg-conv-hover:    rgba(255,255,255,.055);
+  --bg-conv-active:   rgba(79,110,247,.14);
+  --bg-avatar-user:   #4f6ef7;
+  --bg-avatar-ai:     #25273a;
+  --border:           rgba(255,255,255,.07);
+  --border-input:     rgba(255,255,255,.09);
+  --text-primary:     #e4e5f0;
+  --text-secondary:   #6b6e87;
+  --text-muted:       #3e4057;
+  --text-placeholder: #42445a;
+  --text-user:        #ffffff;
+  --text-ai:          #d0d2e4;
+  --accent:           #4f6ef7;
+  --accent-hover:     #6a85ff;
+  --accent-dim:       rgba(79,110,247,.18);
+  --dot:              #555770;
+  --kbd-bg:           #22243a;
+  --kbd-border:       rgba(255,255,255,.1);
+  --copy-hover:       rgba(255,255,255,.08);
+  --danger:           #e05c5c;
+  --danger-hover:     rgba(224,92,92,.12);
+  --logo-mark:        #4f6ef7;
+  --code-bg:          #12131a;
+  --code-border:      rgba(255,255,255,.06);
+  --blockquote-bar:   #4f6ef7;
+  --shadow-md:        0 4px 20px rgba(0,0,0,.3);
+  --shadow-sm:        0 2px 8px  rgba(0,0,0,.25);
+}
+
+/* ── LIGHT theme ── */
+[data-theme="light"] {
+  --bg-app:           #f0f0f5;
+  --bg-sidebar:       #ffffff;
+  --bg-header:        rgba(255,255,255,.88);
+  --bg-main:          #f0f0f5;
+  --bg-input-bar:     #ffffff;
+  --bg-input:         #ececf1;
+  --bg-bubble-ai:     #ffffff;
+  --bg-bubble-user:   #4f6ef7;
+  --bg-conv-hover:    rgba(0,0,0,.04);
+  --bg-conv-active:   rgba(79,110,247,.1);
+  --bg-avatar-user:   #4f6ef7;
+  --bg-avatar-ai:     #e8e9f6;
+  --border:           rgba(0,0,0,.07);
+  --border-input:     rgba(0,0,0,.09);
+  --text-primary:     #1a1b28;
+  --text-secondary:   #7a7d98;
+  --text-muted:       #b0b3cc;
+  --text-placeholder: #b5b8d0;
+  --text-user:        #ffffff;
+  --text-ai:          #1a1b28;
+  --accent:           #4f6ef7;
+  --accent-hover:     #3a59e8;
+  --accent-dim:       rgba(79,110,247,.1);
+  --dot:              #aeb1cc;
+  --kbd-bg:           #e4e5ef;
+  --kbd-border:       rgba(0,0,0,.1);
+  --copy-hover:       rgba(0,0,0,.06);
+  --danger:           #d94f4f;
+  --danger-hover:     rgba(217,79,79,.08);
+  --logo-mark:        #4f6ef7;
+  --code-bg:          #f5f5fa;
+  --code-border:      rgba(0,0,0,.07);
+  --blockquote-bar:   #4f6ef7;
+  --shadow-md:        0 4px 20px rgba(0,0,0,.1);
+  --shadow-sm:        0 2px 8px  rgba(0,0,0,.07);
+}
+
+/* ── 2. GLOBAL RESET ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-app);
+  color: var(--text-primary);
+  height: 100dvh;
+  overflow: hidden;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+}
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+a      { color: var(--accent); text-underline-offset: 3px; }
+
+/* ── 3. APP SHELL  (sidebar + main side-by-side) ─────────────── */
+.app-shell {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ── 4. SIDEBAR ───────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  transition: background var(--t) var(--ease),
+              border-color var(--t) var(--ease),
+              transform .3s var(--ease);
+  z-index: 200;
+  overflow: hidden;
+}
+
+/* ── Sidebar header ── */
+.sidebar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 14px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Rotating geometric logo mark */
+.logo-mark {
+  display: block;
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  background: var(--logo-mark);
+  position: relative;
+  animation: logoSpin 8s linear infinite;
+  flex-shrink: 0;
+}
+.logo-mark::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 3px;
+  background: var(--bg-sidebar);
+  transition: background var(--t) var(--ease);
+}
+@keyframes logoSpin {
+  0%,25%  { transform: rotate(0deg);  }
+  50%,75% { transform: rotate(45deg); }
+  100%    { transform: rotate(90deg); }
+}
+
+.sidebar__brand-name {
+  font-family: var(--font-display);
+  font-size: .9rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--text-primary);
+  transition: color var(--t);
+}
+
+/* ── Conversation list ── */
+.sidebar__nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sidebar__nav::-webkit-scrollbar       { width: 3px; }
+.sidebar__nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+/* Section label ("Today", "Yesterday") */
+.conv-group-label {
+  font-size: .65rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 8px 4px;
+}
+
+/* Individual conversation item */
+.conv-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--t) var(--ease);
+  overflow: hidden;
+}
+.conv-item:hover              { background: var(--bg-conv-hover); }
+.conv-item.active             { background: var(--bg-conv-active); }
+.conv-item.active .conv-title { color: var(--accent); }
+
+/* Chat bubble icon in conv item */
+.conv-item__icon {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  transition: color var(--t);
+}
+.conv-item.active .conv-item__icon { color: var(--accent); }
+
+.conv-title {
+  flex: 1;
+  font-size: .83rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--t);
+}
+
+/* Per-item delete button (appears on hover) */
+.conv-delete {
+  opacity: 0;
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: opacity .15s, background .15s, color .15s;
+}
+.conv-item:hover .conv-delete { opacity: 1; }
+.conv-delete:hover {
+  background: var(--danger-hover);
+  color: var(--danger);
+}
+.conv-delete svg { width: 13px; height: 13px; }
+
+/* ── Sidebar footer (theme toggle) ── */
+.sidebar__foot {
+  padding: 10px 10px 14px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.theme-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: .82rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background var(--t), border-color var(--t),
+              color var(--t), transform .15s;
+}
+.theme-toggle:hover {
+  background: var(--bg-conv-hover);
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+.theme-toggle:active { transform: scale(.97); }
+
+.icon { width: 16px; height: 16px; flex-shrink: 0; }
+[data-theme="dark"]  .icon--sun  { display: block; }
+[data-theme="dark"]  .icon--moon { display: none;  }
+[data-theme="light"] .icon--sun  { display: none;  }
+[data-theme="light"] .icon--moon { display: block; }
+
+/* ── 5. SIDEBAR OVERLAY (mobile) ─────────────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 190;
+  opacity: 0;
+  transition: opacity .3s var(--ease);
+}
+.sidebar-overlay.active { opacity: 1; }
+
+/* ── 6. MAIN PANEL ────────────────────────────────────────────── */
+.main-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-main);
+  transition: background var(--t) var(--ease);
+  min-width: 0; /* allow flex child to shrink */
+}
+
+/* ── 7. HEADER ────────────────────────────────────────────────── */
+.header {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: background var(--t), border-color var(--t);
+  z-index: 10;
+}
+
+.header__title {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: .95rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--t);
+}
+
+/* ── 8. ICON BUTTON (shared style) ────────────────────────────── */
+.btn-icon {
+  width: 34px; height: 34px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  flex-shrink: 0;
+  transition: background .15s, color .15s, transform .15s;
+}
+.btn-icon svg { width: 17px; height: 17px; }
+.btn-icon:hover { background: var(--bg-conv-hover); color: var(--text-primary); }
+.btn-icon:active { transform: scale(.91); }
+
+.btn-delete:hover { background: var(--danger-hover); color: var(--danger); }
+.btn-hamburger { display: none; }   /* visible only on mobile */
+
+/* New-chat button in sidebar head */
+#btnNewChat { color: var(--accent); }
+#btnNewChat:hover { background: var(--accent-dim); color: var(--accent-hover); }
+
+/* ── 9. CHAT MESSAGES AREA ────────────────────────────────────── */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 0 16px;
+  display: flex;
+  flex-direction: column;
+  scroll-behavior: smooth;
+}
+.chat-messages::-webkit-scrollbar       { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+/* ── 10. MESSAGE ROW ──────────────────────────────────────────── */
+/* Full-width row, centred content up to 760px */
+.message-row {
+  width: 100%;
+  padding: 6px 20px;
+  display: flex;
+  gap: 12px;
+  animation: msgIn .38s var(--ease-spring) both;
+}
+
+/* AI → left-aligned */
+.message-row--ai   { justify-content: flex-start;  align-items: flex-start; }
+/* User → right-aligned, reversed */
+.message-row--user { justify-content: flex-end;    align-items: flex-start; flex-direction: row-reverse; }
+
+/* Limit inner content width */
+.message-row--ai   .msg-body,
+.message-row--user .msg-body { max-width: min(680px, 75%); }
+
+/* ── Appear animation ── */
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(14px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+
+/* ── 11. AVATAR ───────────────────────────────────────────────── */
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: var(--r-avatar);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .75rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: -.01em;
+  user-select: none;
+  margin-top: 2px;
+  /* Subtle pop animation */
+  animation: avatarPop .4s var(--ease-spring) both;
+}
+@keyframes avatarPop {
+  from { transform: scale(.7); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+
+.avatar--user {
+  background: var(--bg-avatar-user);
+  color: #fff;
+}
+.avatar--ai {
+  background: var(--bg-avatar-ai);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  /* AI avatar: little sparkle SVG */
+}
+
+/* SVG icon inside AI avatar */
+.avatar--ai svg { width: 16px; height: 16px; }
+
+/* ── 12. MESSAGE BODY  (label + bubble + timestamp) ───────────── */
+.msg-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* Sender label */
+.msg-label {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 0 4px;
+}
+
+/* ── 13. BUBBLE ───────────────────────────────────────────────── */
+.bubble-wrap {
+  position: relative;   /* anchor for copy button */
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* Reverse so copy btn sits on outside for user messages */
+.message-row--user .bubble-wrap { flex-direction: row-reverse; }
+
+.bubble {
+  padding: 11px 15px;
+  border-radius: var(--r-bubble);
+  font-size: .9rem;
+  line-height: 1.65;
+  word-break: break-word;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--t), color var(--t),
+              box-shadow var(--t), transform .15s;
+  position: relative;
+}
+/* Subtle lift on hover */
+.bubble:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+.message-row--ai .bubble {
+  background: var(--bg-bubble-ai);
+  color: var(--text-ai);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.message-row--user .bubble {
+  background: var(--bg-bubble-user);
+  color: var(--text-user);
+  border-bottom-right-radius: 4px;
+}
+
+/* ── 14. COPY BUTTON ──────────────────────────────────────────── */
+.copy-btn {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+  /* Hidden until bubble-wrap is hovered */
+  opacity: 0;
+  transform: scale(.85);
+  transition: opacity .15s, transform .15s, background .15s, color .15s;
+}
+.bubble-wrap:hover .copy-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+.copy-btn:hover { background: var(--copy-hover); color: var(--text-primary); }
+.copy-btn:active { transform: scale(.88); }
+.copy-btn svg { width: 13px; height: 13px; }
+
+/* "Copied!" flash state */
+.copy-btn.copied { color: #3ecf8e; }
+
+/* ── 15. TIMESTAMP ─────────────────────────────────────────────── */
+.msg-time {
+  font-size: .66rem;
+  color: var(--text-secondary);
+  padding: 0 4px;
+  font-style: italic;
+  font-weight: 300;
+}
+.message-row--user .msg-time { text-align: right; }
+
+/* ── 16. DATE DIVIDER ─────────────────────────────────────────── */
+.date-divider {
+  align-self: center;
+  font-size: .67rem;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 3px 12px;
+  margin: 8px 0;
+  transition: background var(--t), color var(--t);
+}
+
+/* ── 17. MARKDOWN INSIDE BUBBLES ──────────────────────────────── */
+/* Scoped to .bubble so prose styles don't leak */
+
+.bubble p        { margin-bottom: .55em; }
+.bubble p:last-child { margin-bottom: 0; }
+.bubble ul, .bubble ol { padding-left: 1.4em; margin-bottom: .55em; }
+.bubble li       { margin-bottom: .2em; }
+
+.bubble h1,.bubble h2,.bubble h3,.bubble h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin: .6em 0 .3em;
+  line-height: 1.25;
+}
+.bubble h1 { font-size: 1.15em; }
+.bubble h2 { font-size: 1.05em; }
+.bubble h3 { font-size: .95em; }
+
+/* Inline code */
+.bubble code {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: .82em;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+
+/* Code block */
+.bubble pre {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  margin: .6em 0;
+}
+.bubble pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: .8em;
+  color: var(--text-primary);
+}
+
+/* Blockquote */
+.bubble blockquote {
+  border-left: 3px solid var(--blockquote-bar);
+  padding-left: 12px;
+  margin: .5em 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Table */
+.bubble table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: .85em;
+  margin: .6em 0;
+}
+.bubble th, .bubble td {
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  text-align: left;
+}
+.bubble th { font-weight: 600; background: var(--code-bg); }
+
+/* Horizontal rule */
+.bubble hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: .7em 0;
+}
+
+/* User bubble — invert some elements so they stay readable on blue */
+.message-row--user .bubble code {
+  background: rgba(255,255,255,.18);
+  border-color: rgba(255,255,255,.2);
+  color: #fff;
+}
+.message-row--user .bubble pre {
+  background: rgba(0,0,0,.25);
+  border-color: rgba(255,255,255,.1);
+}
+.message-row--user .bubble pre code { color: #d6e0ff; }
+.message-row--user .bubble blockquote { color: rgba(255,255,255,.7); border-left-color: rgba(255,255,255,.5); }
+.message-row--user .bubble th { background: rgba(0,0,0,.15); }
+.message-row--user .bubble th,
+.message-row--user .bubble td { border-color: rgba(255,255,255,.2); }
+
+/* Strong / em */
+.bubble strong { font-weight: 600; }
+.bubble em     { font-style: italic; }
+.bubble a      { color: var(--accent); }
+.message-row--user .bubble a { color: #c8d9ff; }
+
+/* ── 18. TYPING INDICATOR ─────────────────────────────────────── */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 13px 17px;
+  background: var(--bg-bubble-ai);
+  border: 1px solid var(--border);
+  border-radius: var(--r-bubble);
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+  box-shadow: var(--shadow-sm);
+  animation: msgIn .3s var(--ease-spring) both;
+}
+.typing-indicator span {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--dot);
+  display: block;
+  animation: dotBounce 1.3s ease-in-out infinite;
+}
+.typing-indicator span:nth-child(2) { animation-delay: .16s; }
+.typing-indicator span:nth-child(3) { animation-delay: .32s; }
+
+@keyframes dotBounce {
+  0%,60%,100% { transform: translateY(0);    opacity: .4; }
+  30%          { transform: translateY(-6px); opacity: 1;  }
+}
+
+/* ── 19. SCROLL FAB ───────────────────────────────────────────── */
+.scroll-fab {
+  position: absolute;
+  bottom: calc(var(--input-bar-h) + 12px);
+  right: 28px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-bubble-ai);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity .2s, transform .2s, background var(--t), color var(--t);
+  z-index: 10;
+}
+.scroll-fab.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.scroll-fab:hover   { color: var(--accent); }
+.scroll-fab svg     { width: 17px; height: 17px; }
+
+.main-panel { position: relative; } /* anchor FAB */
+
+/* ── 20. INPUT BAR ────────────────────────────────────────────── */
+.input-bar {
+  background: var(--bg-input-bar);
+  border-top: 1px solid var(--border);
+  padding: 12px 20px 8px;
+  flex-shrink: 0;
+  transition: background var(--t), border-color var(--t);
+}
+
+.input-bar__inner {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-input);
+  padding: 9px 9px 9px 15px;
+  transition: border-color .2s, box-shadow .2s, background var(--t);
+}
+.input-bar__inner:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.input-bar__textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-body);
+  font-size: .9rem;
+  color: var(--text-primary);
+  line-height: 1.55;
+  max-height: 160px;
+  overflow-y: auto;
+  transition: color var(--t);
+}
+.input-bar__textarea::placeholder { color: var(--text-placeholder); }
+.input-bar__textarea::-webkit-scrollbar       { width: 3px; }
+.input-bar__textarea::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+.send-btn {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .2s, transform .15s, opacity .2s;
+}
+.send-btn svg   { width: 15px; height: 15px; }
+.send-btn:hover:not(:disabled)  { background: var(--accent-hover); transform: scale(1.07); }
+.send-btn:active:not(:disabled) { transform: scale(.9); }
+.send-btn:disabled              { opacity: .3; cursor: not-allowed; }
+
+.input-bar__hint {
+  margin-top: 6px;
+  font-size: .67rem;
+  color: var(--text-secondary);
+  text-align: right;
+  font-weight: 300;
+}
+kbd {
+  font-family: var(--font-body);
+  font-size: .63rem;
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  transition: background var(--t);
+}
+
+/* ── 21. EMPTY STATE ──────────────────────────────────────────── */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 24px;
+  text-align: center;
+  animation: msgIn .5s var(--ease-spring) both;
+}
+.empty-state__icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: var(--bg-bubble-ai);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+.empty-state__icon svg { width: 24px; height: 24px; }
+.empty-state__title {
+  font-family: var(--font-display);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--text-primary);
+}
+.empty-state__sub {
+  font-size: .85rem; color: var(--text-secondary);
+  max-width: 270px; line-height: 1.6;
+}
+
+/* ── 22. RESPONSIVE — MOBILE ──────────────────────────────────── */
+@media (max-width: 700px) {
+  /* Sidebar slides off-screen by default */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    transform: translateX(-100%);
+  }
+  .sidebar.open      { transform: translateX(0); }
+  .sidebar-overlay   { display: block; }
+  .btn-hamburger     { display: flex !important; }
+
+  .header { padding: 0 14px; }
+  .chat-messages { padding: 16px 0 12px; }
+  .message-row   { padding: 5px 12px; }
+  .input-bar     { padding: 10px 14px 6px; }
+  .input-bar__hint { display: none; }
+  .scroll-fab    { right: 14px; }
+}
+
+@media (max-width: 480px) {
+  .message-row--ai   .msg-body,
+  .message-row--user .msg-body { max-width: 90%; }
+}
